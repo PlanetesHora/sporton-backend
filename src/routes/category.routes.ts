@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {createCategory, getCategories, getCategoryById, updateCategory, deleteCategory} from "../controllers/category.controller";
-import {upload} from "../middlewares/upload.middleware"
+import {upload} from "../middlewares/upload.middleware";
 import { authenticate } from "../middlewares/auth.middleware";
 
 const router = Router();
