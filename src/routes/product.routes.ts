@@ -4,9 +4,9 @@ import {
     getProducts,
     getProductById,
     updateProduct,
-    deleteProduct,
+    deleteProduct
 } from "../controllers/product.controller";
-import { upload } from "../middlewares/upload.middleware";
+import {upload} from "../middlewares/upload.middleware";
 import { authenticate } from "../middlewares/auth.middleware";
 
 const router = Router();
