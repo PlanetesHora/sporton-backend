@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Product from "../models/product.model";
+import cloudinary from "../config/cloudinary.config"; 
 
 // CREATE
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
@@ -7,7 +8,10 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
         const productData = req.body;
 
         if (req.file) {
-            productData.imageUrl = req.file.path; 
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "products",
+            });
+            productData.imageUrl = result.secure_url;
         }
 
         if (productData.categoryId) {
@@ -52,8 +56,12 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
 export const updateProduct = async (req: Request, res: Response): Promise<void> => {
     try { 
         const productData = req.body;
+        
         if (req.file) {
-            productData.imageUrl = req.file.path;
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "products",
+            });
+            productData.imageUrl = result.secure_url;
         }
 
         const product = await Product.findByIdAndUpdate(req.params.id, productData, { new: true });
@@ -82,4 +90,3 @@ export const deleteProduct = async (req: Request, res: Response): Promise<void> 
         res.status(500).json({ message: "Error deleting product", error });
     }
 };
-

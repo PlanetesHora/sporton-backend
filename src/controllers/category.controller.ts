@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Category from "../models/category.model";
+import cloudinary from "../config/cloudinary.config";
 
 // CREATE
 export const createCategory = async (
@@ -10,7 +11,10 @@ export const createCategory = async (
         const categoryData = req.body;
 
         if (req.file) {
-            categoryData.imageUrl = req.file.path;
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "categories",
+            });
+            categoryData.imageUrl = result.secure_url;
         }
 
         const category = new Category(categoryData);
@@ -53,7 +57,10 @@ export const updateCategory = async (req: Request, res: Response): Promise<void>
         const categoryData = req.body;
         
         if (req.file) {
-            categoryData.imageUrl = req.file.path;
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "categories",
+            });
+            categoryData.imageUrl = result.secure_url;
         }
 
         const category = await Category.findByIdAndUpdate(

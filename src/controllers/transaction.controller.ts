@@ -1,14 +1,19 @@
 import { Request, Response } from "express";
 import Transaction from "../models/transaction.model";
 import Product from "../models/product.model";
+import cloudinary from "../config/cloudinary.config"; 
 
 export const createTransaction = async (req: Request, res: Response): Promise<void> => {
     try {
         const transactionData = req.body;
 
-        // Penanganan file (Bukti Pembayaran)
+        // Penanganan file (Bukti Pembayaran) ke Cloudinary
         if (req.file) {
-            transactionData.paymentProof = req.file.path;
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "transactions", // Disimpan di folder 'transactions'
+            });
+            // Simpan URL permanen dari Cloudinary
+            transactionData.paymentProof = result.secure_url;
         } else {
             res.status(400).json({ message: "Payment proof is required" });
             return;
